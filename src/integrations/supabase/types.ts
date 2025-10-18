@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      plans: {
+        Row: {
+          created_at: string | null
+          duration_days: number | null
+          id: string
+          name: string
+          price: number
+          search_limit: number
+          verification_type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_days?: number | null
+          id?: string
+          name: string
+          price: number
+          search_limit: number
+          verification_type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_days?: number | null
+          id?: string
+          name?: string
+          price?: number
+          search_limit?: number
+          verification_type?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          daily_searches_limit: number | null
+          daily_searches_used: number | null
+          email: string | null
+          full_name: string | null
+          id: string
+          last_search_reset_at: string | null
+          plan_expires_at: string | null
+          plan_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          daily_searches_limit?: number | null
+          daily_searches_used?: number | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          last_search_reset_at?: string | null
+          plan_expires_at?: string | null
+          plan_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          daily_searches_limit?: number | null
+          daily_searches_used?: number | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          last_search_reset_at?: string | null
+          plan_expires_at?: string | null
+          plan_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       searches: {
         Row: {
           answer: string | null
@@ -21,6 +93,7 @@ export type Database = {
           follow_up_questions: string[] | null
           id: string
           is_favorite: boolean | null
+          profile_id: string | null
           query: string
           sources: Json | null
           user_id: string | null
@@ -31,6 +104,7 @@ export type Database = {
           follow_up_questions?: string[] | null
           id?: string
           is_favorite?: boolean | null
+          profile_id?: string | null
           query: string
           sources?: Json | null
           user_id?: string | null
@@ -41,18 +115,81 @@ export type Database = {
           follow_up_questions?: string[] | null
           id?: string
           is_favorite?: boolean | null
+          profile_id?: string | null
           query?: string
           sources?: Json | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "searches_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          payment_method: string
+          plan_id: string | null
+          status: string | null
+          transaction_code: string | null
+          user_id: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          payment_method: string
+          plan_id?: string | null
+          status?: string | null
+          transaction_code?: string | null
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          payment_method?: string
+          plan_id?: string | null
+          status?: string | null
+          transaction_code?: string | null
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      reset_daily_searches: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
